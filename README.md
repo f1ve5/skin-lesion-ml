@@ -1,104 +1,110 @@
 # Skin Lesion Classification · Traditional Machine Learning
 
-**基于团队多维手工特征的分类器设计与性能优化。**
+**English** | [简体中文](README.zh-CN.md)
 
-这是皮肤病变三分类课程项目中传统机器学习部分的个人贡献展示。我的工作从队友提供的形状、颜色和纹理特征出发，完成分类器对比、层次分类设计、特征筛选、非对称 PCA 与交互特征优化。分类目标为黑色素瘤 `mel`、色素痣 `nv` 和血管性病变 `vasc`。
+**Classifier design and performance optimization using multidimensional handcrafted features.**
 
-## 核心设计
+This repository presents my contribution to the traditional machine learning component of a team course project on skin lesion classification. Starting from shape, color, and texture features extracted by teammates, I worked on classifier comparison, hierarchical classification, feature selection, asymmetric PCA, and interaction features.
 
-两个分类任务使用不同的特征空间：第一层识别血管性病变，采用通道组内 PCA 降维；第二层区分黑色素瘤和色素痣，保留原始特征空间，并增加交互特征。
+The task is to distinguish melanoma (`mel`), melanocytic nevi (`nv`), and vascular lesions (`vasc`).
+
+## Method
+
+The two classification stages use different feature spaces. The first stage identifies vascular lesions using PCA within feature-channel groups. The second stage distinguishes melanoma from nevi using the original feature space and additional interaction features.
 
 ```mermaid
 flowchart LR
-    A[队友提供的多维手工特征] --> B[L1: 通道组内 PCA + mRMR + LR]
-    B --> C{预测为血管性病变?}
-    C -->|是| D[vasc]
-    C -->|否| E[L2: 原始特征 mRMR + 交互特征]
-    E --> F[XGBoost / RBF-SVM 内层择优 + 阈值优化]
-    F --> G[mel / nv]
+    A["Handcrafted features provided by teammates"] --> B["L1: Within-group PCA + mRMR + Logistic Regression"]
+    B --> C{"Predicted as vascular?"}
+    C -->|Yes| D["vasc"]
+    C -->|No| E["L2: mRMR on original features + interactions"]
+    E --> F["XGBoost / RBF-SVM selection + threshold optimization"]
+    F --> G["mel / nv"]
 ```
 
-- **层次分类**：将三分类拆成 vasc / 非 vasc，以及 mel / nv 两个子任务。
-- **非对称 PCA**：按任务选择是否降维，避免强制两层共用同一种特征表示。
-- **分类阶段特征优化**：mRMR 近似筛选结合 ICC 和先验权重；二层探索乘积、比值、差值交互。
-- **模型与阈值优化**：二层比较 XGBoost 与 SVM，并在内层分组验证中选择决策阈值。
+- **Hierarchical classification:** decompose the task into vascular versus nonvascular classification, followed by melanoma versus nevus classification.
+- **Asymmetric PCA:** apply dimensionality reduction according to the needs of each stage.
+- **Feature optimization:** combine approximate mRMR selection with intraclass correlation coefficient (ICC) and prior-based weights; explore product, ratio, and difference interactions in the second stage.
+- **Model and threshold optimization:** compare XGBoost and SVM in the second stage and select its decision threshold using inner grouped validation.
 
-完整原代码在 [original_method/](original_method/)，复核入口在 [reassessment/](reassessment/)。这些内容保留原算法配置，与此前简化的工程示例分开。
+The original implementation is preserved in [original_method/](original_method/), with reassessment scripts in [reassessment/](reassessment/). These retain the original algorithm configuration and are separate from the later simplified engineering example.
 
-## 原方法的结果
+## Results and reproducibility
 
-原课程评估记录为 **Macro-F1 0.789、Balanced Accuracy 0.815**。收到原始数据集后，重新核对图像、掩膜、特征与模型结果；复核记录见 [原始数据与方法复核报告](reports/reassessment/README.md)。
+The original course evaluation reported **Macro-F1 of 0.789** and **balanced accuracy of 0.815**. Subsequent reassessment checked the source images, masks, feature extraction, and classifier outputs.
 
-**原图重提的特征 CSV 与原缓存逐字节一致；原配置精确复现 0.789039。** 不使用测试标签生成交互特征、且 ICC 仅用外层训练折计算时，Macro-F1 仍为 **0.787922**。
+**The feature CSV regenerated from all source images is byte-for-byte identical to the original cache. The original configuration reproduced Macro-F1 = 0.789039.** Computing test interactions without test labels and estimating ICC using only each outer training fold yielded **Macro-F1 = 0.787922**.
 
-| 复核配置 | Macro-F1 |
+| Reassessment configuration | Macro-F1 |
 | --- | ---: |
-| 完整原方法：训练折 ICC、无标签交互 | **0.788** |
-| 关闭 L1 PCA | 0.753 |
-| 关闭交互特征 | 0.782 |
-| 原固定参数基线中的最好结果：LR | 0.720 |
+| Full original method: training-fold ICC and label-independent test interactions | **0.788** |
+| Without L1 PCA | 0.753 |
+| Without interaction features | 0.782 |
+| Best original fixed-parameter baseline: Logistic Regression | 0.720 |
 
-上述配置使用同一外层分组；完整方法比关闭 L1 PCA 高约 3.49 个百分点，比关闭交互高约 0.56 个百分点。基线没有与完整方法相同的调参预算，差距不归因于单一架构因素。
+All configurations use the same outer group splits. The full method exceeds the configuration without L1 PCA by approximately **3.49 percentage points**, and the configuration without interactions by **0.56 percentage points**. The baselines have a smaller tuning budget than the full method, so their performance gap cannot be attributed to the classification architecture alone.
 
-![原方法复核与配置对照](reports/reassessment/original_method_comparison.png)
+![Original method reassessment and configuration comparisons](reports/reassessment/original_method_comparison.png)
 
-| 指标 | 原课程记录 |
+| Metric | Original course result |
 | --- | ---: |
 | Accuracy | 0.772 |
 | Macro-F1 | **0.789** |
-| Balanced Accuracy | **0.815** |
-| mel recall | 0.724 |
-| nv recall | 0.743 |
-| vasc recall | 0.978 |
+| Balanced accuracy | **0.815** |
+| Melanoma recall | 0.724 |
+| Nevus recall | 0.743 |
+| Vascular lesion recall | 0.978 |
 
-原始数据包含 600 张图像，对应 200 个原图 ID，每个 ID 含原图和两个增强视图。874 个原始数值特征清理 4 个常数列后，得到 **870 维**特征。外层评估按原图 ID 做五折分组，同一原图及其增强视图不跨训练集与测试集。
+The dataset contains **600 images representing 200 original image IDs**, each with an original image and two augmented views. Removing four constant columns from 874 raw numerical features produces **870 features**. Outer evaluation uses five-fold GroupKFold by original image ID, keeping each original image and its augmented views in the same fold.
 
-这是该课程数据集和评估设置下的结果。外层分组验证、内层模型选择以及已知实现限制见 [评估说明](docs/EVALUATION.md)；不将其表述为独立患者测试或临床验证成绩。
+These results apply to this course dataset and evaluation procedure. They are not independent patient-level test results or clinical validation. The [reassessment report](reports/reassessment/README.md) and [evaluation notes](docs/EVALUATION.md) document the evidence, inner model-selection procedure, and remaining implementation limitations. Supporting reports are currently in Chinese.
 
-## 我的贡献
+## My contribution
 
-| 工作 | 个人贡献 |
+| Area | My work |
 | --- | --- |
-| 分类器对比 | LR、RBF-SVM、Random Forest、Gradient Boosting、KNN |
-| 分类架构 | 两层分类器，以及 XGBoost / SVM 二层模型选择 |
-| 性能优化 | 分类阶段的特征筛选、非对称 PCA、交互特征与阈值实验 |
-| 实验分析 | 类别平衡指标、各类召回率、误差分析及配置对照 |
+| Classifier comparison | Logistic Regression, RBF-SVM, Random Forest, Gradient Boosting, and KNN |
+| Classification architecture | Two-stage classifier and second-stage XGBoost / SVM model selection |
+| Performance optimization | Classification-stage feature selection, asymmetric PCA, interaction features, and threshold experiments |
+| Experimental analysis | Class-balanced metrics, per-class recall, error analysis, and configuration comparisons |
 
-图像预处理和多维特征提取属于团队上游工作，作为本模块的输入依赖保留。后续添加的命令行、测试和原始数据复核属于工程整理，不倒推为原课程阶段已完成的工作。可用于个人主页的介绍见 [贡献说明](docs/CONTRIBUTIONS.md)。
+**Image preprocessing and handcrafted feature extraction were upstream team contributions.** Those modules are included as dependencies of the classification workflow. The command-line interfaces, tests, and source-data reassessment were added during later repository preparation; they are not presented as work completed during the original course project.
 
-## 复核原方法
+Additional contribution details are available in [docs/CONTRIBUTIONS.md](docs/CONTRIBUTIONS.md).
 
-在仓库根目录执行，数据目录需包含 `image/`、`mask/`、`label.csv`：
+## Reproduce the original method
+
+Run the following commands from the repository root. The private dataset directory must contain `image/`, `mask/`, and `label.csv`.
 
 ```bash
 python -m pip install -e ".[original]"
 
-# 从原图重新提取特征，不读取旧缓存
+# Regenerate features from source images without loading the old cache.
 python reassessment/assess_original.py --source original_method --data data/private/Data_Proj2 --output outputs/original-reassessment --stage extract
 
-# 保留原模型与参数，复现并做最小修改对照
+# Reproduce the original models and run controlled reassessment configurations.
 python reassessment/assess_original.py --source original_method --data data/private/Data_Proj2 --output outputs/original-reassessment --stage evaluate
 
-# 原五类基线；特征预选改为仅在各训练折拟合
+# Evaluate the five original baselines with feature selection fitted within each training fold.
 python reassessment/assess_original.py --source original_method --data data/private/Data_Proj2 --output outputs/original-reassessment --stage baselines
 ```
 
-默认评估包括原配置、训练折 ICC 配置、关闭 L1 PCA 和关闭交互特征。每个模型同时产生原逻辑预测与不使用测试标签的交互特征预测；具体差异和汇总在复核报告中说明。数据和逐样本输出均不随仓库发布。
+The default evaluation includes the original configuration, training-fold ICC, removal of L1 PCA, and removal of interaction features. For each fitted model, it records both the original prediction logic and predictions using test interactions computed without test labels. Their differences are documented in the reassessment report.
 
-无需原数据的可运行工程示例见 [ENGINEERING.md](ENGINEERING.md)。其中的简化配置和 F-test 成绩与原方法分开报告，不能用来判定原方法失效。
+For an executable example that does not require the private dataset, see [ENGINEERING.md](ENGINEERING.md). Its simplified models and F-test results are reported separately and are not an equivalent reproduction of the original method.
 
-## 仓库结构
+## Repository structure
 
 ```text
 skin-lesion-ml/
-├── original_method/       # 原方法完整模块；仅适配数据路径
-├── reassessment/          # 数据核对、重提、原方法与成对对照入口
-├── reports/reassessment/  # 复核证据、汇总与实验限制
-├── reports/historical/    # 原课程聚合结果及来源校验
-├── src/skin_lesion_ml/    # 后续独立工程示例
-├── tests/                # 工程示例回归测试
-├── data/                 # 数据契约与合成示例
-└── docs/                 # 方法归属、评估协议
+├── original_method/       # Original modules; only the data-path configuration is adapted
+├── reassessment/          # Data checks, feature regeneration, and paired reassessment
+├── reports/reassessment/  # Reproduction evidence, results, and limitations
+├── reports/historical/    # Original aggregate results and provenance
+├── src/skin_lesion_ml/    # Later simplified engineering example
+├── tests/                 # Regression tests for the engineering example
+├── data/                  # Input contract and synthetic demonstration data
+└── docs/                  # Contribution and evaluation documentation
 ```
 
-仓库不包含真实数据和预训练模型。团队代码的许可范围尚未指定。
+Private images, real feature tables, per-sample outputs, and pretrained models are excluded from this repository. A license for the team code has not yet been specified.
