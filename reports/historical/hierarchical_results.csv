@@ -1,0 +1,2 @@
+accuracy,balanced_acc,f1_macro,per_class_precision,per_class_recall
+0.7716666666666666,0.814973544973545,0.789039243741605,"{'mel': np.float64(0.7272727272727273), 'nv': np.float64(0.7992831541218638), 'vasc': np.float64(0.7857142857142857)}","{'mel': np.float64(0.7238095238095238), 'nv': np.float64(0.7433333333333333), 'vasc': np.float64(0.9777777777777777)}"

@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+build/
+dist/
+outputs/
+data/private/
+**/data/private/
+**/Data_Proj2/
+*_private.csv
+*.joblib
+*.pkl
+.DS_Store
+Thumbs.db

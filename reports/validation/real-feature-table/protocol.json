@@ -1,0 +1,38 @@
+{
+  "arguments": {
+    "command": "evaluate",
+    "data": "../图像处理/proj_v2_ablation/outputs/no_hair_removal/results/features.csv",
+    "output": "outputs/local-validation",
+    "group_column": "image_id",
+    "label_column": "dx",
+    "inner_folds": 4,
+    "k": 30,
+    "selection": "f",
+    "seed": 42,
+    "models": [
+      "logreg",
+      "svm",
+      "random-forest",
+      "gradient-boosting",
+      "knn",
+      "hierarchical",
+      "hierarchical-no-pca",
+      "hierarchical-no-interactions"
+    ],
+    "folds": 5
+  },
+  "versions": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scikit-learn": "1.8.0",
+    "matplotlib": "3.10.8",
+    "joblib": "1.5.3"
+  },
+  "rows": 600,
+  "features": 874,
+  "groups": 200,
+  "data_sha256": "3809ade8267f2538702f069a8d1a1d3387cec44a19e6210b3c68c4c245b6fd00",
+  "evaluation": "nested GroupKFold; pooled sample OOF and group majority-vote scores",
+  "group_vote_tie_break": "lexicographically first class",
+  "upstream_features": "Precomputed input; upstream fitting/leakage must be audited separately."
+}

@@ -1,0 +1,28 @@
+{
+  "label_rows": 600,
+  "indexed_images": 600,
+  "independent_image_ids": 200,
+  "images_on_disk": 600,
+  "masks_matched": 600,
+  "labels": {
+    "nv": 300,
+    "mel": 210,
+    "vasc": 90
+  },
+  "views": {
+    "aug1": 200,
+    "aug2": 200,
+    "orig": 200
+  },
+  "duplicate_pixel_sets_across_groups": 0,
+  "label_file_sha256": "1f1a1ae7fd25f2ce98e60a8a65cecbc23d8071c5395109820c52f55b62f314de",
+  "raw_numeric_features": 874,
+  "missing_numeric_cells": 0,
+  "infinite_numeric_cells": 0,
+  "constant_columns": [
+    "topo_n_components",
+    "spec_Sr_peak",
+    "spec_Stheta_peak",
+    "specific_blue_veil_ratio"
+  ]
+}

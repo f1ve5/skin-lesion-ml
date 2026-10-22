@@ -1,0 +1,14 @@
+{
+  "shape": [
+    600,
+    874
+  ],
+  "matching_cells": 524400,
+  "total_cells": 524400,
+  "all_close": true,
+  "max_absolute_difference": 0.0,
+  "changed_columns": [],
+  "cached_sha256": "3809ade8267f2538702f069a8d1a1d3387cec44a19e6210b3c68c4c245b6fd00",
+  "recomputed_sha256": "3809ade8267f2538702f069a8d1a1d3387cec44a19e6210b3c68c4c245b6fd00",
+  "byte_identical": true
+}

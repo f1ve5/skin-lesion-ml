@@ -1,0 +1,5 @@
+variant,changed_predictions,evaluated_rows
+original,0,600
+fold-icc,0,600
+no-pca,3,600
+no-interactions,0,600

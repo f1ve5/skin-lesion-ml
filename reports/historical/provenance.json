@@ -1,0 +1,42 @@
+[
+  {
+    "source": "proj_v2_ablation/classification/classify.py",
+    "destination": "reference/classify.py",
+    "sha256": "d0650010ece5f1e4b1d14bc5b39fb48b3a10a9139c6bb1836a1eadea9328bb23"
+  },
+  {
+    "source": "proj_v2_ablation/classification/ensemble.py",
+    "destination": "reference/ensemble.py",
+    "sha256": "430975611bd6098f9a0913e118fbaf0f8d0d2fb0e6155dbb9de82e7e14707920"
+  },
+  {
+    "source": "proj_v2_ablation/analysis/feature_screening.py",
+    "destination": "reference/feature_screening.py",
+    "sha256": "a1ef101a9a1d069b611a7cd471f778ae1ea268b64ac5a0792ad72311b4e3fb0b"
+  },
+  {
+    "source": "proj_v2_ablation/analysis/feature_interaction.py",
+    "destination": "reference/feature_interaction.py",
+    "sha256": "c7b033483d84934a08b7a139595b3bcce99839be09436033c030db5797bbe9f5"
+  },
+  {
+    "source": "proj_v2_ablation/outputs/no_hair_removal/advanced/results/hierarchical_results.csv",
+    "destination": "reports/historical/hierarchical_results.csv",
+    "sha256": "22d3487009f04162ed5943ea71b1f63dbac5ebb87e9dd4ac10a96c31c6ba7530"
+  },
+  {
+    "source": "proj_v2_ablation/outputs/no_hair_removal/advanced/results/hierarchical_fold_details.csv",
+    "destination": "reports/historical/hierarchical_fold_details.csv",
+    "sha256": "4892fdaf1da21f8b688931ab4c055effd0f51a02b659322d7fafc31ddfd47456"
+  },
+  {
+    "source": "proj_v2_ablation/outputs/no_hair_removal/results/classifier_comparison.csv",
+    "destination": "reports/historical/classifier_comparison.csv",
+    "sha256": "a30dec59069a165d55ccf50154177ea8bba35d1153903832909bcc6679985d75"
+  },
+  {
+    "source": "proj_v2_ablation/outputs/no_hair_removal/advanced/results/pca_borda_l1k_sweep.csv",
+    "destination": "reports/historical/pca_borda_l1k_sweep.csv",
+    "sha256": "6da3761b2da36574c20e40872c363b1193f1ac7342aa59dddab1dbbaf623627c"
+  }
+]

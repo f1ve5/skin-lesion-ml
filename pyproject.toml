@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skin-lesion-ml"
+version = "0.1.0"
+description = "Feature-based skin lesion classification: baselines, hierarchical models and grouped evaluation"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3", "pandas>=2,<4", "scikit-learn>=1.4,<2", "matplotlib>=3.7,<4", "joblib>=1.3,<2"]
+
+[project.optional-dependencies]
+original = ["scipy>=1.10,<2", "scikit-image>=0.21,<1", "opencv-python>=4.8,<5", "PyWavelets>=1.4,<2", "xgboost>=2,<4", "seaborn>=0.12,<1", "tqdm>=4.65,<5"]
+
+[project.scripts]
+skin-lesion-ml = "skin_lesion_ml.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

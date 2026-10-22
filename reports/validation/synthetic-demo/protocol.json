@@ -1,0 +1,38 @@
+{
+  "arguments": {
+    "command": "evaluate",
+    "data": "data/demo_features.csv",
+    "output": "outputs/demo-validation",
+    "group_column": "image_id",
+    "label_column": "dx",
+    "inner_folds": 2,
+    "k": 10,
+    "selection": "mrmr",
+    "seed": 42,
+    "models": [
+      "logreg",
+      "svm",
+      "random-forest",
+      "gradient-boosting",
+      "knn",
+      "hierarchical",
+      "hierarchical-no-pca",
+      "hierarchical-no-interactions"
+    ],
+    "folds": 3
+  },
+  "versions": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scikit-learn": "1.8.0",
+    "matplotlib": "3.10.8",
+    "joblib": "1.5.3"
+  },
+  "rows": 135,
+  "features": 18,
+  "groups": 45,
+  "data_sha256": "3cddd78473c6eff167f15b672d1062e40206d48c00adcb95a6040bf8ebd9562b",
+  "evaluation": "nested GroupKFold; pooled sample OOF and group majority-vote scores",
+  "group_vote_tie_break": "lexicographically first class",
+  "upstream_features": "Precomputed input; upstream fitting/leakage must be audited separately."
+}
